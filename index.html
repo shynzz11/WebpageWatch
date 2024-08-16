@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrist Watch Collection</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #444; /* Light shade of cyan */
+            color: #000; /* Text color */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background-image: url('download.jpg');
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        .title-bar {
+            background-color: #444;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 1.5em;
+        }
+
+        .navbar {
+            background-color: #5e5e5e;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Slight background for readability */
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        .collection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .watch {
+    background-color: #ffffe0;
+    margin: 10px;
+    padding: 10px;
+    border: 3px solid #ddd;
+    border-radius: 4px;
+    width: 30%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.7s;
+    display: flex; /* Added */
+    flex-direction: column; /* Added */
+    align-items: center; /* Added */
+    text-align: center; /* Added */
+}
+
+
+        .watch:hover {
+            transform: scale(1.05);
+        }
+
+        .watch img {
+            max-width: 100%;
+            height: 300px;
+            object-fit: contain;
+        }
+
+        .watch h3 {
+            font-size: 1.2em;
+            color: #000;
+        }
+
+        .watch p {
+            color: #555;
+        }
+
+        /* Tooltip */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background-color: #444;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .dark-mode {
+            background-color: #333;
+            color: white;
+        }
+
+        .dark-mode .title-bar,
+        .dark-mode .navbar,
+        .dark-mode .footer {
+            background-color: #000;
+        }
+
+        /* Customer Reviews */
+        .reviews {
+            padding: 20px;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .review {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .star-rating {
+            color: #FFD700;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-top: 40px;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+        }
+
+        .faq-item h3 {
+            cursor: pointer;
+        }
+
+        .faq-item p {
+            display: none;
+            margin: 10px 0;
+        }
+
+        /* Loading Animation */
+        #loading {
+            display: none;
+            position: fixed;
+            z-index: 1002;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .search-bar input[type="text"] {
+            width: 50%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Newsletter Sign-up */
+        .newsletter {
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .newsletter input[type="email"] {
+            width: 50%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            padding: 10px 0;
+            list-style: none;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .breadcrumb li {
+            display: inline;
+            font-size: 14px;
+        }
+
+        .breadcrumb li+li:before {
+            padding: 8px;
+            color: black;
+            content: "/\00a0";
+        }
+
+        .breadcrumb a {
+            color: #0275d8;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        Welcome to the Wrist Watch Collection
+    </div>
+
+    <div class="title-bar">
+        Wrist Watch Collection by Shayan
+    </div>
+
+    <div class="navbar">
+        <a href="#luxury">Luxury</a>
+        <a href="#aviator">Aviator</a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for watches...">
+    </div>
+
+    <div id="loading">Loading...</div>
+
+    <div class="content">
+        <!-- Breadcrumb -->
+        <ul class="breadcrumb">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Watches</a></li>
+            <li>Luxury Collection</li>
+        </ul>
+
+        <!-- Luxury Collection Section -->
+        <h2 id="luxury">Luxury Collection</h2>
+        <div class="collection">
+            <div class="watch" onclick="openModal('DOUGLAS DAKOTA')">
+                <img src="watch5.jpg" alt="Watch 5">
+                <h3>DOUGLAS DAKOTA</h3>
+                <p>$ 1,200</p>
+                <p>Notorious for its unyielding efforts and heroic feats even to this day, the C-47 Dakota is one of the greatest transport aircraft of all time.</p>
+                <div class="tooltip-container">link to site
+                    <div class="tooltip-text">A symbol of timeless craftsmanship and aviation history.
+                        <a href="https://aviatorwatch.swiss/en/in/watches/aviator-watch-douglas/douglas-dakota/v-3-31-0-228-4" target="_blank" style="color: #9989d6; text-decoration: underline;">Visit Website</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="watch" onclick="openModal('AVI-8 P-51 Mustang')">
+                <img src="watch6.jpg" alt="Watch 6">
+                <h3>AVI-8 P-51 Mustang</h3>
+                <p>$ 1,100</p>
+                <p>A brilliant new flight timepiece inspired by the P-51 Mustang, a renowned fighter plane from World War II.</p>
+                <div class="tooltip-container">link to site
+                    <div class="tooltip-text">Capturing the essence of aviation history in a stylish form.
+                        <a href="https://avi-8.com/collections/p-51-mustang?srsltid=AfmBOoozfAhGt3vWWNUAN92r9eEcgpvtRIqAofoHaSSqk28yCLKIRZ8n" target="_blank" style="color: #9989d6; text-decoration: underline;">Visit Website</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="watch" onclick="openModal('ROLEX')">
+                <img src="watch2.jpg" alt="Watch 2">
+                <h3>ROLEX</h3>
+                <p>$ 2,000</p>
+                <p>Symbolizing both luxury and endurance, this Rolex model is built to stand the test of time.</p>
+                <div class="tooltip-container">link to site
+                    <div class="tooltip-text">The epitome of class and luxury in watchmaking.
+                        <a href="https://www.rolex.com/en-us" target="_blank" style="color: #9989d6; text-decoration: underline;">Visit Website</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aviator Collection Section -->
+        <h2 id="aviator">Aviator Collection</h2>
+        <div class="collection">
+            <div class="watch" onclick="openModal('AVI-8 Spitfire')">
+                <img src="watch3.jpg" alt="Watch 3">
+                <h3>AVI-8 Spitfire</h3>
+                <p>$ 800</p>
+                <p>Inspired by the Supermarine Spitfire, this watch captures the spirit of the legendary British aircraft.</p>
+                <div class="tooltip-container">link to site
+                    <div class="tooltip-text">A tribute to the agility and prowess of a wartime legend.
+                        <a href="https://avi-8.com/collections/spitfire?srsltid=AfmBOoo0aLuuKbJ2P9g8s-778kFsuwHwbI-AtkPrrIjWmUkmwQQA3goV" target="_blank" style="color: #9989d6; text-decoration: underline;">Visit Website</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="watch" onclick="openModal('ZENITH Pilot')">
+                <img src="watch4.jpg" alt="Watch 4">
+                <h3>ZENITH Pilot</h3>
+                <p>$ 1,300</p>
+                <p>The Zenith Pilot collection pays homage to pioneering aviators with its bold design and reliable functionality.</p>
+                <div class="tooltip-container">link to site
+                    <div class="tooltip-text">Blending tradition with innovation for the modern aviator.
+                        <a href="https://www.zenith-watches.com/int/products/pilot" target="_blank" style="color: #9989d6; text-decoration: underline;">Visit Website</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="watch" onclick="openModal('TAG Heuer Carrera')">
+                <img src="watch1.jpg" alt="Watch 1">
+                <h3>TAG Heuer Carrera</h3>
+                <p>$ 1,500</p>
+                <p>Precision and performance are at the heart of the TAG Heuer Carrera, a timepiece that embodies the racing spirit.</p>
+                <div class="tooltip-container">link to site
+                    <div class="tooltip-text">An iconic chronograph for those who live for the adrenaline rush.
+                        <a href="https://www.tagheuer.com/in/en/timepieces/collections/tag-heuer-carrera/" target="_blank" style="color: #9989d6; text-decoration: underline;">Visit Website</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">What is the return policy?</h3>
+                <p>We offer a 30-day return policy for all our watches, provided they are returned in their original condition.</p>
+            </div>
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">Do you offer international shipping?</h3>
+                <p>Yes, we ship worldwide. Shipping costs and delivery times may vary depending on the destination.</p>
+            </div>
+            <div class="faq-item">
+                <h3 onclick="toggleFaq(this)">How do I know if a watch is in stock?</h3>
+                <p>All watches displayed on our website are in stock unless marked as "Sold Out".</p>
+            </div>
+        </div>
+
+        <!-- Customer Reviews -->
+        <div class="reviews">
+            <h2>Customer Reviews</h2>
+            <div class="review">
+                <p><strong>John Doe</strong> - "Fantastic collection, high-quality watches, and excellent customer service."</p>
+                <div class="star-rating">★★★★★</div>
+            </div>
+            <div class="review">
+                <p><strong>Jane Smith</strong> - "Loved the variety of watches available. The website is easy to navigate."</p>
+                <div class="star-rating">★★★★☆</div>
+            </div>
+        </div>
+
+        <!-- Newsletter Sign-up -->
+        <div class="newsletter">
+            <h2>Subscribe to Our Newsletter</h2>
+            <p>Get the latest updates and special offers delivered directly to your inbox.</p>
+            <input type="email" placeholder="Enter your email">
+            <button onclick="subscribe()">Subscribe</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2024 Wrist Watch Collection. All rights reserved.
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">🌓</div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <script>
+        // Toggle FAQ answer
+        function toggleFaq(faq) {
+            const answer = faq.nextElementSibling;
+            answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Open modal with dynamic content
+        function openModal(title) {
+            const modal = document.getElementById("myModal");
+            const modalTitle = document.getElementById("modalTitle");
+            const modalDescription = document.getElementById("modalDescription");
+
+            modalTitle.textContent = title;
+            modalDescription.textContent = "Detailed description about " + title + ".";
+
+            modal.style.display = "flex";
+        }
+
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+
+        // Toggle Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Simulate loading animation
+        function simulateLoading() {
+            const loading = document.getElementById("loading");
+            loading.style.display = "block";
+            setTimeout(() => {
+                loading.style.display = "none";
+            }, 2000);
+        }
+
+        // Newsletter Subscription
+        function subscribe() {
+            alert("Thank you for subscribing to our newsletter!");
+        }
+    </script>
+</body>
+</html>
